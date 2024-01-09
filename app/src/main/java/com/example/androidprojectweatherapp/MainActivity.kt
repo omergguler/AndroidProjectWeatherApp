@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -14,7 +15,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,11 +47,16 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.androidprojectweatherapp.constant.Const.Companion.colorBg1
 import com.example.androidprojectweatherapp.constant.Const.Companion.colorBg2
 import com.example.androidprojectweatherapp.constant.Const.Companion.permissions
 import com.example.androidprojectweatherapp.model.MyLatLng
 import com.example.androidprojectweatherapp.model.forecast.ForecastResult
+import com.example.androidprojectweatherapp.model.weather.Weather
 import com.example.androidprojectweatherapp.model.weather.WeatherResult
 import com.example.androidprojectweatherapp.ui.theme.AndroidProjectWeatherAppTheme
 //import com.example.androidprojectweatherapp.view.ForecastSection
@@ -106,6 +119,8 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(MyLatLng(0.0, 0.0))
             }
 
+
+
             locationCallback = object: LocationCallback(){
                 override fun onLocationResult(p0: LocationResult) {
                     super.onLocationResult(p0)
@@ -126,7 +141,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LocationScreen(this@MainActivity, currentLocation)
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "locationScreen") {
+                        composable("locationScreen") {LocationScreen(context = this@MainActivity, currentLocation = currentLocation, navController= navController) }
+                        composable("forecastScreen") { forecastsPage(mainViewModel.forecastResponse)}
+                    }
                 }
             }
         }
@@ -144,8 +163,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun LocationScreen(context: Context, currentLocation: MyLatLng){
-
+    private fun LocationScreen(context: Context, currentLocation: MyLatLng, navController: NavHostController){
         //request runtime permission
         val launcherMultiplePermissions = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
@@ -227,13 +245,77 @@ class MainActivity : ComponentActivity() {
                         ErrorSection(mainViewModel.errorMessage)
                     }
                     else -> {
-                        WeatherSection(mainViewModel.weatherResponse)
-//                        ForecastSection(mainViewModel.forecastResponse)
+                        WeatherSection(mainViewModel.weatherResponse, navController)
                     }
                 }
             }
 
 
+        }
+    }
+
+    @Composable
+    fun forecastsPage(weatherResponse: ForecastResult) {
+        Log.i("Fore",weatherResponse.toString())
+        val forecastList = weatherResponse.list!!.map {
+            listOf(
+                it.weather!![0].main.toString(),
+                it.main!!.temp.toString(),
+                it.wind!!.speed.toString(),
+                it.main!!.humidity.toString(),
+                it.dtTxt!!.split(" ")[1],
+                it.dtTxt!!.split(" ")[0]
+            )
+        }
+
+        LazyColumn {
+            item {
+                // Column headers
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(MaterialTheme.colorScheme.background)
+                ) {
+                    Text(text = "Type", style = MaterialTheme.typography.bodyMedium)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Temperature", style = MaterialTheme.typography.bodyMedium)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Wind-Speed", style = MaterialTheme.typography.bodyMedium)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Humidity", style = MaterialTheme.typography.bodyMedium)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Time", style = MaterialTheme.typography.bodyMedium)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "Date", style = MaterialTheme.typography.bodyMedium)
+
+                }
+            }
+
+            items(forecastList) { forecast ->
+                ForecastItem(forecast)
+            }
+        }
+    }
+
+    @Composable
+    fun ForecastItem(forecast: List<String>) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(text = forecast[0], style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(25.dp))
+            Text(text = forecast[1], style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(25.dp))
+            Text(text = forecast[2], style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(25.dp))
+            Text(text = forecast[3], style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(25.dp))
+            Text(text = forecast[4], style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(25.dp))
+            Text(text = forecast[5], style = MaterialTheme.typography.bodyMedium)
         }
     }
 

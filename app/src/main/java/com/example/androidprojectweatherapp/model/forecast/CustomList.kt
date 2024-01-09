@@ -17,10 +17,4 @@ data class CustomList(
     @SerializedName("pop") var pop: Double? = null,
     @SerializedName("sys") var sys: Sys? = Sys(),
     @SerializedName("dt_txt") var dtTxt: String? = null,
-
-
-
-
-
-
     )

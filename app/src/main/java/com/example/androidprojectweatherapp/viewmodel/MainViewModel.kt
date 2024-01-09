@@ -42,21 +42,6 @@ class MainViewModel: ViewModel() {
                 state = STATE.FAILED
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     fun getForecastByLocation(latLng: MyLatLng){

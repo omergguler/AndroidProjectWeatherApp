@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.androidprojectweatherapp.constant.Const.Companion.LOADING
 import com.example.androidprojectweatherapp.constant.Const.Companion.NA
@@ -27,7 +29,7 @@ import com.example.androidprojectweatherapp.utils.Utils.Companion.buildIcon
 import com.example.androidprojectweatherapp.utils.Utils.Companion.timestampToHumanDate
 
 @Composable
-fun WeatherSection(weatherResponse: WeatherResult) {
+fun WeatherSection(weatherResponse: WeatherResult, navController: NavHostController) {
 
     var title = ""
     if (!weatherResponse.name.isNullOrEmpty()){
@@ -93,6 +95,20 @@ fun WeatherSection(weatherResponse: WeatherResult) {
     }
 
 
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Button(
+            onClick = { navController.navigate("forecastScreen") },
+            // Customize button appearance as needed
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text("Forecasts")
+        }
+    }
 }
 
 @Composable
