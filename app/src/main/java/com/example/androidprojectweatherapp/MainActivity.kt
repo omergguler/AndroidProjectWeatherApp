@@ -61,6 +61,7 @@ import com.example.androidprojectweatherapp.model.weather.WeatherResult
 import com.example.androidprojectweatherapp.ui.theme.AndroidProjectWeatherAppTheme
 //import com.example.androidprojectweatherapp.view.ForecastSection
 import com.example.androidprojectweatherapp.view.WeatherSection
+import com.example.androidprojectweatherapp.view.forecastsPage
 import com.example.androidprojectweatherapp.viewmodel.MainViewModel
 import com.example.androidprojectweatherapp.viewmodel.STATE
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -254,70 +255,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Composable
-    fun forecastsPage(weatherResponse: ForecastResult) {
-        Log.i("Fore",weatherResponse.toString())
-        val forecastList = weatherResponse.list!!.map {
-            listOf(
-                it.weather!![0].main.toString(),
-                it.main!!.temp.toString(),
-                it.wind!!.speed.toString(),
-                it.main!!.humidity.toString(),
-                it.dtTxt!!.split(" ")[1],
-                it.dtTxt!!.split(" ")[0]
-            )
-        }
 
-        LazyColumn {
-            item {
-                // Column headers
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .background(MaterialTheme.colorScheme.background)
-                ) {
-                    Text(text = "Type", style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Temperature", style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Wind-Speed", style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Humidity", style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Time", style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Date", style = MaterialTheme.typography.bodyMedium)
-
-                }
-            }
-
-            items(forecastList) { forecast ->
-                ForecastItem(forecast)
-            }
-        }
-    }
-
-    @Composable
-    fun ForecastItem(forecast: List<String>) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(text = forecast[0], style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.width(25.dp))
-            Text(text = forecast[1], style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.width(25.dp))
-            Text(text = forecast[2], style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.width(25.dp))
-            Text(text = forecast[3], style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.width(25.dp))
-            Text(text = forecast[4], style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.width(25.dp))
-            Text(text = forecast[5], style = MaterialTheme.typography.bodyMedium)
-        }
-    }
 
 
 
