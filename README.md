@@ -1,6 +1,6 @@
 # Wheather app
 
-###Contributers
+### Contributers
 * Ömer Güler
 * Kaan Şimşek
 
