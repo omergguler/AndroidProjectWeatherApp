@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "locationScreen") {
                         composable("locationScreen") {LocationScreen(context = this@MainActivity, currentLocation = currentLocation, navController= navController) }
-                        composable("forecastScreen") { forecastsPage(mainViewModel.forecastResponse)}
+                        composable("forecastScreen") { forecastsPage(mainViewModel.forecastResponse, navController= navController)}
                     }
                 }
             }
